@@ -232,3 +232,69 @@ React is smart in its rerendering. Consider this code:
 ```
 
 The powerful thing about this is that it only rerenders the part of the DOM that needs to update, not the entire DOM. (For instance, if you click inside one of those inputs, you'll keep focus between re-renders). Run this same code with out React, and the entire DOM re-renders (you lose focus).
+
+## Video 8: Style React Components
+
+* uses objects rather than strings for declaring styles, which gives much more flexibility when composing styles:
+
+`style={{ paddingLeft: 20 }}` or `style={{ paddingLeft: '20px' }}`
+
+* uses `className` rather than `class` (too many namespace conflicts with the keyword `class`)
+
+**Note: From this point on, I'm just noting things that are new to me, rather than trying to take notes on everything, just so I can move a little faster.**
+
+## Video 10: Use Component State with React
+
+New to me was the idea of a setState updater function. "If you need to reference some existing state as you update state, you can use an updater function that returns the new state":
+
+```js
+this.setState(state => {
+  if (state.running) {
+    clearInterval(this.timer)
+  } else {
+    this.timer = setInterval(() => {
+      this.setState({ lapse: Date.now() - startTime })
+    })
+  }
+  return { running: !state.running }
+})
+```
+
+## Video 12: Use Class Components with React
+
+Using 'public class fields' rather than inline arrow functions:
+
+Inline arrow function:
+
+```js
+class MyComponent extends React.Component {
+  state = { count: 0 }
+
+  render() {
+    const { count } = this.state
+    return (
+      <button onClick={() => this.setState({ count: ++count })}>{count}</button>
+    )
+  }
+}
+```
+
+Public class field for the increment function:
+
+```js
+class MyComponent extends React.Component {
+  state = { count: 0 }
+
+  incrementClicks = () => {
+    const { count } = this.state
+    this.setState({ count: ++count })
+  }
+
+  render() {
+    const { count } = this.state
+    return <button onClick={this.incrementClicks}>{count}</button>
+  }
+}
+```
+
+This cleans up the render function, and removes a possible performance bottleneck.

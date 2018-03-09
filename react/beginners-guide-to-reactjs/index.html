@@ -4,23 +4,48 @@
 <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
-<script type="text/babel">
-  const rootElement = document.getElementById('root')
+<script type="text/babel"> 
+  class StopWatch extends React.Component {
+    state = {
+      lapse: 0,
+      running: false
+    }
 
-  function tick() {
-    const time = new Date().toLocaleTimeString()
-    const element = (
-      <div>
-        It is 
-        <input value={time} />
-        <input value={time} />
-        <input value={time} />
-      </div>
-    )
+    handleRunClick = () => {
+      const startTime = Date.now() - this.state.lapse
 
-    ReactDOM.render(element, rootElement)
+      this.setState(state => {
+        if (state.running) {
+          clearInterval(this.timer)
+        } else {
+          this.timer = setInterval(() => {
+            this.setState({lapse: Date.now() - startTime})
+          })
+        }
+        return {running: !state.running}
+      })
+
+
+    }
+
+    handleClearClick = () => {
+      clearInterval(this.timer)
+      this.setState({ lapse: 0, running: false })
+    }
+
+    render() {
+      const { running, lapse } = this.state
+
+      return (
+        <div>
+          <label>{lapse}ms</label>
+          <button onClick={this.handleRunClick}>{running ? 'Stop' : 'Start'}</button>
+          <button onClick={this.handleClearClick}>Clear</button>
+        </div>
+      )
+    }
   }
 
-  tick()
-  setInterval(tick, 1000)
+  const element = <StopWatch />
+  ReactDOM.render(element, document.getElementById('root'))
 </script>
